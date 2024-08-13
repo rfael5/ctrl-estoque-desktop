@@ -1,22 +1,19 @@
 import json
 import math
 from pandas import DataFrame
-import connection
-import db_ctrl_estoque
+import http_requests as http
+# import connection
+# import db_ctrl_estoque
+
+#from '../../backend-estoque' import server
 
 class EstoqueService:
     def __init__(self):
-        self.produtos_tpa = None
-        self.p_controle = None
-        self.semiacabados_tpa = None
-        self.sa_controle = None
         
-        self.ctrl_acabados = None        
-        self.ctrl_semiacabados = None
+        self.produtos = None
     
     def formatarAcabados(self):
-        self.produtos_tpa = connection.getProdutosControleEstoque()
-        self.p_controle = db_ctrl_estoque.getEstoqueCompleto()
+        self.produtos = http.getSaldoEstoque()
         
         df_controle = DataFrame(self.p_controle)
         df_controle = df_controle.groupby(['pkProduto', 'descricao'])[['saldo']].sum().reset_index()
@@ -27,25 +24,9 @@ class EstoqueService:
         _acabadosjson = json.loads(df_tpa.to_json(orient='records'))
         
         self.ctrl_acabados = _acabadosjson
-    
-    def formatarSemiAcabados(self):
-        self.produtos_tpa = connection.getProdutosControleEstoque()
-        self.semiacabados_tpa = connection.getControleSemiAcabados()
-        self.sa_controle = db_ctrl_estoque.getEstoqueSA()
-        
-        df_ctrl_sa = DataFrame(self.sa_controle)
-        df_ctrl_sa = df_ctrl_sa.groupby(['idxProduto', 'descricao'])[['saldo']].sum().reset_index()
-        sa_controle_json = json.loads(df_ctrl_sa.to_json(orient='records'))
-        
-        df_semiacabados = DataFrame(self.semiacabados_tpa)
-        df_semiacabados['totalProducao'] = df_semiacabados.apply(self.calcularSaldoSemiacabados, axis=1)
-        df_semiacabados = df_semiacabados.apply(self.calcularSaldoSA, controle=sa_controle_json, axis=1)
-        _semiacabadosjson = json.loads(df_semiacabados.to_json(orient='records'))
-        self.ctrl_semiacabados = _semiacabadosjson
         
     def formatarProdutosControle(self):
         self.formatarAcabados()
-        self.formatarSemiAcabados()
     
     
     def calcularSaldo(self, row, controle):

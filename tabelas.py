@@ -19,19 +19,17 @@ def armazenarIdProduto(event, tabela, _tptabela):
 
 def tabelaControleEstoque(frame):
     global tbl_controle
-    tbl_controle = ttk.Treeview(frame, columns = ('ID', 'Produto', 'UN', 'Cód. Produto', 'Saldo'), show='headings')
+    tbl_controle = ttk.Treeview(frame, columns = ('ID', 'Produto', 'Saldo', 'UN'), show='headings')
     tbl_controle.heading('ID', text='ID')
     tbl_controle.heading('Produto', text='Produto')
-    tbl_controle.heading('UN', text='UN')
-    tbl_controle.heading('Cód. Produto', text='Cod. Produto')
     tbl_controle.heading('Saldo', text='Saldo')
+    tbl_controle.heading('UN', text='UN')
     tbl_controle.grid(row=4, columnspan=2, padx=(80, 0), pady=10, sticky="nsew")
     
     tbl_controle.column('ID', width=100, anchor=CENTER)
     tbl_controle.column('Produto', width=300, anchor=CENTER)
-    tbl_controle.column('UN', width=100, anchor=CENTER)
-    tbl_controle.column('Cód. Produto', width=100, anchor=CENTER)
     tbl_controle.column('Saldo', width=100, anchor=CENTER)
+    tbl_controle.column('UN', width=100, anchor=CENTER)
     tbl_controle.bind('<ButtonRelease>', lambda event: armazenarInfoProduto(event, tbl_controle))
 
 

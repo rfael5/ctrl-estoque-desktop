@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from datetime import datetime
 from tkinter import messagebox
-import db_ctrl_estoque
 import classes.controleEstoqueService as controleEstoqueService
 
 
