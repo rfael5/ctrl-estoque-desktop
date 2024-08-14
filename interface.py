@@ -1,9 +1,5 @@
 import tabelas
-# import classes.controleEstoqueService as controleEstoqueService
-# import classes.atualizacao_saldo as atualizacao_saldo
-# import classes.filtro_controle as filtro_controle
-import classes.http_requests as http
-#import classes.historico_acertos as historico_acertos
+import http_requests as http
 
 import pandas as pd
 import numpy as np
@@ -37,6 +33,7 @@ def inserirTabelaControle():
 
 def janelaAttEstoque(_tbl, tp_att):
     dados_prod = tabelas.armazenarInfoProduto(Event, _tbl)
+    print(dados_prod)
     
     if dados_prod == None:
         messagebox.showinfo('Nenhum produto selecionado', 'Selecione um produto na tabela para alterar seu saldo.')
@@ -46,7 +43,7 @@ def janelaAttEstoque(_tbl, tp_att):
         janela_soma.title("Atualização estoque")
         janela_soma.geometry("400x300")
         
-        if tp_att == 'soma':
+        if tp_att == 'adicao':
             _titulo = 'Atualizar estoque'
             titulo_botao = 'Adicionar'
         else:
@@ -58,27 +55,51 @@ def janelaAttEstoque(_tbl, tp_att):
         
         lbl_add_saldo = Label(janela_soma, text = f'{_titulo}:')
         lbl_add_saldo.grid(row=1, padx=(40, 0))
-        att_var = ''
+        att_var = IntVar()
         att_saldo = Entry(janela_soma, textvariable=att_var, bd=4)
         att_saldo.grid(row=2, padx=(40, 0), pady=(0,20))
         
         lbl_motivo_explicacao = Label(janela_soma, text="Por favor, escreva o motivo da atualização do estoque:")
         lbl_motivo_explicacao.grid(row=3, padx=(40, 0))
-        just_var = ''
+        just_var = StringVar()
         motivo = Entry(janela_soma, textvariable=just_var, bd=4)
         motivo.grid(row=4, padx=(40, 0), pady=(0,20))
         
         lbl_motivo_explicacao = Label(janela_soma, text="Por favor, escreva o nome do solicitante:")
         lbl_motivo_explicacao.grid(row=5, padx=(40, 0))
-        solicitante_var = ''
+        solicitante_var = StringVar()
         solicitante = Entry(janela_soma, textvariable=solicitante_var, bd=4)
         solicitante.grid(row=6, padx=(40, 0), pady=(0,20))
 
-        
-        # btn_add = Button(janela_soma, text=f"{titulo_botao}", bg='#C0C0C0', font=("Arial", 16), command=on_button_click)
-        # btn_add.grid(row=7, sticky='nsew', padx=(40, 0), pady=(0,20))
+        obj = {
+            "idProduto":dados_prod[0], 
+            "descricao": dados_prod[1], 
+            "saldo": att_var, 
+            "unidade":"UN", 
+            "dataMov": '1723518000000',
+            "tipoMov":tp_att,
+            "solicitante": just_var,
+            "motivo":solicitante_var}
 
-#O código abaixo cria a interface que usamos para testar nosso script.
+        btn_alterar = Button(janela_soma, text=f"{titulo_botao}", command=lambda: setarDadosDicionario(obj, tp_att))
+        btn_alterar.grid(row=7, padx=(40, 0), pady=20)
+
+
+def setarDadosDicionario(obj, tp_att):
+    if tp_att == "remocao":
+        obj["saldo"] = obj["saldo"].get() * -1
+    else:
+        obj["saldo"] = obj["saldo"].get()
+    obj["solicitante"] = obj["solicitante"].get()
+    obj["motivo"] = obj["motivo"].get()
+    atualizarSaldo(obj)
+
+def atualizarSaldo(obj):
+
+    http.atualizarSaldo(obj["idProduto"], obj["saldo"])
+    http.alterarEstoque(obj)
+    inserirTabelaControle()
+
 
 #Tkinter
 root = Tk()
@@ -126,13 +147,13 @@ input_saldo.grid(row=2, column=0, columnspan=2, padx=(80, 0), pady=(10, 30), sti
 
 #Row 4 - Tabela controle estoque
 
-btn_somar_estoque = Button(secondFrame, text="Adicionar estoque", bg='#C0C0C0', font=("Arial", 16), command=lambda: janelaAttEstoque(tabelas.tbl_controle, 'soma'))
+btn_somar_estoque = Button(secondFrame, text="Adicionar estoque", bg='#C0C0C0', font=("Arial", 16), command=lambda: janelaAttEstoque(tabelas.tbl_controle, 'adicao'))
 btn_somar_estoque.grid(row=6, column=0, columnspan=2, padx=(80, 0), pady=(10, 30), sticky='nsew')
 
 btn_atualisar = Button(secondFrame, text="Atualizar saldo", bg='#C0C0C0', font=("Arial", 16), command=inserirTabelaControle)
 btn_atualisar.grid(row=7, column=0, columnspan=2, padx=(80, 0), pady=(10, 30), sticky='nsew')
 
-btn_acerto_estoque = Button(secondFrame, text="Aplicar acerto de estoque", bg='#C0C0C0', font=("Arial", 16), command=lambda: janelaAttEstoque(tabelas.tbl_controle, 'subtracao'))
+btn_acerto_estoque = Button(secondFrame, text="Aplicar acerto de estoque", bg='#C0C0C0', font=("Arial", 16), command=lambda: janelaAttEstoque(tabelas.tbl_controle, 'remocao'))
 btn_acerto_estoque.grid(row=8, column=0, columnspan=2, padx=(80, 0), pady=(10, 30), sticky='nsew')
 
 tabelas.tabelaControleEstoque(secondFrame)
