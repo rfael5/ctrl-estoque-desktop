@@ -20,20 +20,16 @@ def alterarEstoque(atualizacao):
         data = json.loads(json_data)
 
         response = requests.post(url, json=data)
-        print(response.json())
     except requests.RequestException as e:
         print(f"Erro na requisição: {e}")
     except ValueError as e:
         print(e)
 
 
-# INSERT INTO ctrl_estoque (idProduto, descricao, saldo, unidade, dataMov, tipoMov,solicitante, motivo) 
-#             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 def atualizarSaldo(id, att_saldo):
     try:
         payload = {'id':id, 'movimentacao':att_saldo}
         res = requests.patch('http://127.0.0.1:5000/atualizar-saldo', json=payload)
-        print(res.text)
     except requests.RequestException as e:
         print(f"Erro na requisição: {e}")
     except ValueError as e:
@@ -44,14 +40,15 @@ def getHistoricoPeriodo(data_inicio, data_fim):
     try:
         url = f"""http://127.0.0.1:5000/historico-periodo?data_inicio={data_inicio}&data_fim={data_fim}"""
         response = requests.get(url)
-        print(response.json())
+        return response.json()
     except requests.RequestException as e:
         print(f"Erro na requisição: {e}")
     except ValueError as e:
         print(e)
 
 
-atualizarSaldo(1, 150)
+
+
 
 
 

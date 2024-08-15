@@ -35,23 +35,21 @@ def tabelaControleEstoque(frame):
 
 def tabelaMotivo(frame):
     global tbl_motivo_acabados
-    label_semi_acabados = Label(frame, text="Lista de acertos - Acabados", font=('Arial', 12, 'bold'))
-    label_semi_acabados.grid(row=8, columnspan=2, padx=(80, 0), pady=(0, 10))
     
-    tbl_motivo_acabados = ttk.Treeview(frame, columns = ('ID', 'Produto','Solicitante', 'Motivo', 'Saldo', 'Data e hora'), show='headings')
-    tbl_motivo_acabados.heading('ID', text='ID')
+    tbl_motivo_acabados = ttk.Treeview(frame, columns = ('Produto', 'Tipo alteração', 'Solicitante', 'Motivo', 'Saldo', 'Data e hora'), show='headings')
     tbl_motivo_acabados.heading('Produto', text='Produto')
+    tbl_motivo_acabados.heading('Tipo alteração', text='Tipo alteração')
     tbl_motivo_acabados.heading('Solicitante', text='Solicitante')
     tbl_motivo_acabados.heading('Motivo', text='Motivo')
     tbl_motivo_acabados.heading('Saldo', text='Subtração')
     tbl_motivo_acabados.heading('Data e hora', text='Data e hora')
-    tbl_motivo_acabados.grid(row=12, columnspan=2, padx=(80, 0), pady=10, sticky="nsew")
+    tbl_motivo_acabados.grid(row=5, columnspan=2, padx=(80, 0), pady=10, sticky="nsew")
     
-    tbl_motivo_acabados.column('ID', width=100, anchor=CENTER)
-    tbl_motivo_acabados.column('Produto', width=100, anchor=CENTER)
-    tbl_motivo_acabados.column('Solicitante', width=250, anchor=CENTER)
-    tbl_motivo_acabados.column('Motivo', width=250, anchor=CENTER)
-    tbl_motivo_acabados.column('Saldo', width=200, anchor=CENTER)
+    tbl_motivo_acabados.column('Produto', width=250, anchor=CENTER)
+    tbl_motivo_acabados.column('Tipo alteração', width=150, anchor=CENTER)
+    tbl_motivo_acabados.column('Solicitante', width=150, anchor=CENTER)
+    tbl_motivo_acabados.column('Motivo', width=200, anchor=CENTER)
+    tbl_motivo_acabados.column('Saldo', width=100, anchor=CENTER)
     tbl_motivo_acabados.column('Data e hora', width=150, anchor=CENTER)
     
     tbl_motivo_acabados.bind('<ButtonRelease>', lambda event: armazenarInfoProduto(event, tbl_motivo_acabados))
