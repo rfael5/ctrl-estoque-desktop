@@ -36,7 +36,7 @@ def inserirTabelaControle():
         descricao = produto['nomeProduto']
         saldo = produto['saldoTotal']
         un = produto['unidade']
-        if saldo >= 0:
+        if saldo > 300:
             total = 'black'
         else:
             total = 'red'
@@ -101,17 +101,17 @@ def janelaAttEstoque(_tbl, tp_att):
         att_saldo = Entry(janela_soma, textvariable=att_var, bd=4)
         att_saldo.grid(row=2, padx=(40, 0), pady=(0,20))
         
-        lbl_motivo_explicacao = Label(janela_soma, text="Por favor, escreva o motivo da atualização do estoque:")
-        lbl_motivo_explicacao.grid(row=3, padx=(40, 0))
-        just_var = StringVar()
-        motivo = Entry(janela_soma, textvariable=just_var, bd=4)
-        motivo.grid(row=4, padx=(40, 0), pady=(0,20))
-        
         lbl_motivo_explicacao = Label(janela_soma, text="Por favor, escreva o nome do solicitante:")
-        lbl_motivo_explicacao.grid(row=5, padx=(40, 0))
+        lbl_motivo_explicacao.grid(row=3, padx=(40, 0))
         solicitante_var = StringVar()
         solicitante = Entry(janela_soma, textvariable=solicitante_var, bd=4)
-        solicitante.grid(row=6, padx=(40, 0), pady=(0,20))
+        solicitante.grid(row=4, padx=(40, 0), pady=(0,20))
+
+        lbl_motivo_explicacao = Label(janela_soma, text="Por favor, escreva o motivo da atualização do estoque:")
+        lbl_motivo_explicacao.grid(row=5, padx=(40, 0))
+        just_var = StringVar()
+        motivo = Entry(janela_soma, textvariable=just_var, bd=4)
+        motivo.grid(row=6, padx=(40, 0), pady=(0,20))
 
         getDataAtualMilisegundos()
 
@@ -122,8 +122,8 @@ def janelaAttEstoque(_tbl, tp_att):
             "unidade":"UN", 
             "dataMov": getDataAtualMilisegundos(),
             "tipoMov":tp_att,
-            "solicitante": just_var,
-            "motivo":solicitante_var}
+            "solicitante": solicitante_var,
+            "motivo":just_var}
 
         btn_alterar = Button(janela_soma, text=f"{titulo_botao}", command=lambda: setarDadosDicionario(obj, tp_att))
         btn_alterar.grid(row=7, padx=(40, 0), pady=20)
